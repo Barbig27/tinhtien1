@@ -1,16 +1,40 @@
 window.onload = function () {
-    const storedValue = sessionStorage.getItem('gia');
+    const storedValue = getCookie('gia');
     if (storedValue) {
         document.getElementById('gia').value = storedValue;
-        document.getElementById('dongia').textContent = parseFloat(storedValue).toLocaleString()
+        document.getElementById('dongia').textContent = parseFloat(storedValue).toLocaleString();
     }
 };
 
-
-// Lưu giá trị vào sessionStorage khi người dùng thay đổi input
+// Save value to cookie when user changes input
 document.getElementById('gia').addEventListener('input', function () {
-    sessionStorage.setItem('gia', this.value);
+    setCookie('gia', this.value, 7); // Cookie expires in 7 days
+    document.getElementById('dongia').textContent = parseFloat(this.value).toLocaleString();
 });
+
+// Function to set a cookie
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + ";" + expires + ";path=/";
+}
+
+// Function to get a cookie by name
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let c = cookies[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
 
 function validateHour(input) {
     const value = parseInt(input.value, 10);
